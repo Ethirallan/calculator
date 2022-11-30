@@ -1,4 +1,6 @@
 import 'package:calculator/components/calc_button.dart';
+import 'package:calculator/const/calc_colors.dart';
+import 'package:calculator/providers/dark_mode_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:math_expressions/math_expressions.dart';
@@ -45,6 +47,9 @@ class HomePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final darkMode = ref.watch(darkModeProvider);
+    final dmProvider = ref.watch(darkModeProvider.notifier);
+
     processTap(String label) {
       String tempValue = ref.read(equationProvider);
 
@@ -106,12 +111,27 @@ class HomePage extends HookConsumerWidget {
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFFEBEBEB),
+      backgroundColor:
+          darkMode ? CalcColors.backgroundDark : CalcColors.background,
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    dmProvider.toggleAppTheme(ref);
+                  },
+                  icon: Icon(
+                    darkMode ? Icons.sunny : Icons.nightlight,
+                  ),
+                  color: darkMode ? CalcColors.operatorLabelDark : CalcColors.operatorLabel,
+                ),
+              ],
+            ),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -122,16 +142,21 @@ class HomePage extends HookConsumerWidget {
                     const Spacer(),
                     Text(
                       ref.watch(resultProvider),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 60,
+                        color: darkMode
+                            ? CalcColors.resultDark
+                            : CalcColors.result,
                       ),
                     ),
                     const Spacer(),
                     Text(
                       ref.watch(equationProvider),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 22,
-                        color: Color(0xFFA2A3A5),
+                        color: darkMode
+                            ? CalcColors.equationDark
+                            : CalcColors.equation,
                       ),
                     ),
                   ],
