@@ -5,11 +5,16 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class CalcButton extends HookConsumerWidget {
-  CalcButton({Key? key, required this.label, required this.onTap})
+  CalcButton(
+      {Key? key,
+      required this.label,
+      required this.onTap,
+      required this.landscape})
       : super(key: key);
 
   final String label;
   final VoidCallback onTap;
+  final bool landscape;
 
   final List<String> _operators = ['AC', '⌫', '%', '/', 'x', '-', '+', '='];
 
@@ -38,6 +43,7 @@ class CalcButton extends HookConsumerWidget {
 
     return GestureDetector(
       onTap: () async {
+        if (label.isEmpty || label == '%') return;
         tapped.value = true;
         onTap.call();
         Future.delayed(const Duration(milliseconds: 100), () {
@@ -46,26 +52,26 @@ class CalcButton extends HookConsumerWidget {
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 100),
-        height: (MediaQuery.of(context).size.width - 100) / 4,
-        width: label == '='
-            ? (MediaQuery.of(context).size.width - 50) / 2
+        height: landscape
+            ? double.infinity
             : (MediaQuery.of(context).size.width - 100) / 4,
+        width: landscape
+            ? double.infinity
+            : label == '='
+                ? (MediaQuery.of(context).size.width - 50) / 2
+                : (MediaQuery.of(context).size.width - 100) / 4,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
           color: getBackgroundColor(),
           boxShadow: [
             BoxShadow(
-              color: darkMode
-                      ? Colors.grey.shade800
-                      : Colors.grey.shade100,
+              color: darkMode ? Colors.grey.shade800 : Colors.grey.shade100,
               blurRadius: 2,
               spreadRadius: -1,
               offset: Offset(0, tapped.value ? 0 : -4),
             ),
             BoxShadow(
-              color: darkMode
-                      ? Colors.grey.shade900
-                      : Colors.grey.shade400,
+              color: darkMode ? Colors.grey.shade900 : Colors.grey.shade400,
               blurRadius: 2,
               spreadRadius: -1,
               offset: Offset(0, tapped.value ? 0 : 4),

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -18,7 +19,10 @@ class SharedUtility {
   final SharedPreferences sharedPreferences;
 
   bool getDarkModeState() {
-    return sharedPreferences.getBool('dark') ?? false;
+    final Brightness brightness =
+        MediaQueryData.fromWindow(WidgetsBinding.instance.window)
+            .platformBrightness;
+    return sharedPreferences.getBool('dark') ?? brightness == Brightness.dark;
   }
 
   Future<bool> setDarkModeState(bool value) async {
