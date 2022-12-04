@@ -35,13 +35,33 @@ class _ConverterInputFieldState extends State<ConverterInputField> {
                   setState(() {});
                 },
                 icon: const Icon(Icons.clear),
+                color: widget.darkMode
+                    ? CalcColors.equalsBackgroundDark
+                    : CalcColors.equalsBackground,
               )
             : null,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide(
-            color:
-                widget.darkMode ? CalcColors.equationDark : CalcColors.equation,
+            color: widget.darkMode
+                ? CalcColors.equalsLabelDark
+                : CalcColors.equation,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(
+            color: widget.darkMode
+                ? CalcColors.equalsBackgroundDark
+                : CalcColors.equalsBackground,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(
+            color: widget.darkMode
+                ? CalcColors.equalsLabelDark
+                : CalcColors.equation,
           ),
         ),
         label: Text(widget.label),

@@ -26,8 +26,20 @@ class CurrencyDropdown extends StatelessWidget {
             color: darkMode ? CalcColors.equationDark : CalcColors.equation,
           ),
         ),
-        // filled: true,
-        // fillColor: darkMode ? Colors.black : Colors.white,
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(
+            color: darkMode
+                ? CalcColors.equalsBackgroundDark
+                : CalcColors.equalsBackground,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(
+            color: darkMode ? CalcColors.equalsLabelDark : CalcColors.equation,
+          ),
+        ),
         labelText: label,
         labelStyle: TextStyle(
           color: darkMode ? CalcColors.equationDark : CalcColors.equation,

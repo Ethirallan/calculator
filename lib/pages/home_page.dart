@@ -5,25 +5,18 @@ import 'package:calculator/pages/currency_converter_page.dart';
 import 'package:calculator/providers/calc_mode_provider.dart';
 import 'package:calculator/providers/dark_mode_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:math_expressions/math_expressions.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter/services.dart';
+
+// regex for removing trailing 0s
+final RegExp regex = RegExp(r'([.]*0)(?!.*\d)');
+
+final List<String> operations = ['/', 'x', '-', '+'];
 
 class HomePage extends HookConsumerWidget {
-  HomePage({super.key});
-
-  // regex for removing trailing 0s
-  RegExp regex = RegExp(r'([.]*0)(?!.*\d)');
-
-  List<String> operations = ['/', 'x', '-', '+'];
-
-  bool containsOperation(String equation) {
-    return equation.contains('+') ||
-        equation.contains('-') ||
-        equation.contains('/') ||
-        equation.contains('x');
-  }
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -32,6 +25,13 @@ class HomePage extends HookConsumerWidget {
 
     final result = useState<String>('');
     final equation = useState<String>('');
+
+    bool containsOperation(String equation) {
+      return equation.contains('+') ||
+          equation.contains('-') ||
+          equation.contains('/') ||
+          equation.contains('x');
+    }
 
     void goToCurrencyConverter() {
       Navigator.of(context).push(
@@ -55,6 +55,8 @@ class HomePage extends HookConsumerWidget {
           return CalcMode.basic;
         }
       });
+      result.value = '';
+      equation.value = '';
     }
 
     void toggleDarkMode() {
@@ -102,8 +104,11 @@ class HomePage extends HookConsumerWidget {
           break;
         default:
           if (operations.contains(label)) {
-            // if (equation.value == '' || containsOperation(tempValue)) return;
             if (equation.value == '') return;
+            if (calcMode == CalcMode.basic &&
+                containsOperation(equation.value)) {
+              return;
+            }
 
             String lastChar = equation.value.substring(
               equation.value.length - 1,

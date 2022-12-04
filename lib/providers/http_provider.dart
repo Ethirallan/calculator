@@ -34,12 +34,27 @@ class HttpHelper {
         Uri.parse('${dotenv.env['API_URL']}/currency/getCurrencyList'),
       );
 
-      for (var el in jsonDecode(response.body.toString())) {
-        currencyList.add(Currency.fromJson(el));
+      switch (response.statusCode) {
+        case 200:
+          for (var el in jsonDecode(response.body.toString())) {
+            currencyList.add(Currency.fromJson(el));
+          }
+          break;
+        case 403:
+          ref.read(toastProvider.notifier).state = const Toast(
+            'Error: Access Denied',
+            Colors.red,
+          );
+          break;
+        default:
+          ref.read(toastProvider.notifier).state = const Toast(
+            'An error occurred. Please try again later.',
+            Colors.red,
+          );
       }
     } catch (e) {
-      ref.read(toastProvider.notifier).state = Toast(
-        'Error $e',
+      ref.read(toastProvider.notifier).state = const Toast(
+        'An error occurred. Please try again later.',
         Colors.red,
       );
     }
@@ -54,18 +69,38 @@ class HttpHelper {
       amount: amount,
     );
     try {
-      var res = await http.post(
+      Response response = await http.post(
         Uri.parse('${dotenv.env['API_URL']}/currency/convert'),
         headers: headers,
         body: jsonEncode(convertPayload.toJson()),
       );
 
-      if (res.statusCode == 201 && res.body.isNotEmpty) {
-        return double.parse(res.body);
+      switch (response.statusCode) {
+        case 201:
+          if (response.body.isNotEmpty) {
+            return double.parse(response.body);
+          } else {
+            ref.read(toastProvider.notifier).state = const Toast(
+              'An error occurred. Please try again later.',
+              Colors.red,
+            );
+          }
+          break;
+        case 403:
+          ref.read(toastProvider.notifier).state = const Toast(
+            'Error: Access Denied',
+            Colors.red,
+          );
+          break;
+        default:
+          ref.read(toastProvider.notifier).state = const Toast(
+            'An error occurred. Please try again later.',
+            Colors.red,
+          );
       }
     } catch (e) {
-      ref.read(toastProvider.notifier).state = Toast(
-        'Error: $e',
+      ref.read(toastProvider.notifier).state = const Toast(
+        'An error occurred. Please try again later.',
         Colors.red,
       );
     }
