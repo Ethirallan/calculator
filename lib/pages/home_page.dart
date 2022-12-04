@@ -1,6 +1,7 @@
 import 'package:calculator/components/calc_button.dart';
 import 'package:calculator/const/buttons.dart';
 import 'package:calculator/const/calc_colors.dart';
+import 'package:calculator/pages/currency_converter_page.dart';
 import 'package:calculator/providers/calc_mode_provider.dart';
 import 'package:calculator/providers/dark_mode_provider.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +32,14 @@ class HomePage extends HookConsumerWidget {
 
     final result = useState<String>('');
     final equation = useState<String>('');
+
+    void goToCurrencyConverter() {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => const CurrencyConverterPage(),
+        ),
+      );
+    }
 
     void changeCalcMode() {
       ref.read(calcModeProvider.notifier).update((state) {
@@ -126,6 +135,13 @@ class HomePage extends HookConsumerWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
+                      IconButton(
+                        onPressed: goToCurrencyConverter,
+                        icon: const Icon(Icons.currency_exchange),
+                        color: darkMode
+                            ? CalcColors.operatorLabelDark
+                            : CalcColors.operatorLabel,
+                      ),
                       TextButton(
                         onPressed: changeCalcMode,
                         child: Text(
